@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for All files</title>
+    <meta charset="utf-8">
+    <style>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: Arial, Helvetica;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            height: 160px;
+            padding: 0 1em 0 1em;
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 170px;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: Menlo, Monaco, Consolas, Courier New, monospace;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            tab-size: 2;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+
+        .cstat-skip { background: #ddd; color: #111; }
+        .fstat-skip { background: #ddd; color: #111 !important; }
+        .cbranch-skip { background: #ddd !important; color: #111; }
+
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+        }
+
+        .skip-if-branch {
+            display: none;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: #ccc;
+            color: white;
+        }
+
+        .missing-if-branch .typ, .skip-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { color: #000; }
+        div.coverage-summary a:visited { color: #333; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+        .ignore-none { color: #999; font-weight: normal; }
+
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1 style="font-weight: bold;">
+        <a href="https://github.com/npmtest/node-npmtest-nodebb">npmtest-nodebb (v0.0.1)</a>
+    </h1>
+    <h1>Code coverage report for <span class="entity">All files</span></h1>
+    <h2>
+        
+        Statements: <span class="metric">7.62% <small>(1686 / 22112)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class="metric">1.89% <small>(213 / 11246)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class="metric">0.99% <small>(61 / 6173)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class="metric">7.57% <small>(1657 / 21890)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        Ignored: <span class="metric">26 statements, 1 function, 30 branches</span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"></div>
+</div>
+<div class="body">
+<div class="coverage-summary">
+<table>
+<thead>
+<tr>
+   <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
+   <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
+   <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
+   <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
+   <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
+   <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
+   <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
+</tr>
+</thead>
+<tbody><tr>
+	<td class="file high" data-value="node-npmtest-nodebb/"><a href="node-npmtest-nodebb/index.html">node-npmtest-nodebb/</a></td>
+	<td data-value="100" class="pic high"><span class="cover-fill cover-full" style="width: 100px;"></span><span class="cover-empty" style="width:0px;"></span></td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="153" class="abs high">(153&nbsp;/&nbsp;153)</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="126" class="abs high">(126&nbsp;/&nbsp;126)</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="28" class="abs high">(28&nbsp;/&nbsp;28)</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="153" class="abs high">(153&nbsp;/&nbsp;153)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/"><a href="node-npmtest-nodebb/node_modules/nodebb/index.html">node-npmtest-nodebb/node_modules/nodebb/</a></td>
+	<td data-value="20.79" class="pic low"><span class="cover-fill" style="width: 20px;"></span><span class="cover-empty" style="width:80px;"></span></td>
+	<td data-value="20.79" class="pct low">20.79%</td>
+	<td data-value="404" class="abs low">(84&nbsp;/&nbsp;404)</td>
+	<td data-value="10" class="pct low">10%</td>
+	<td data-value="190" class="abs low">(19&nbsp;/&nbsp;190)</td>
+	<td data-value="6.45" class="pct low">6.45%</td>
+	<td data-value="62" class="abs low">(4&nbsp;/&nbsp;62)</td>
+	<td data-value="20.79" class="pct low">20.79%</td>
+	<td data-value="404" class="abs low">(84&nbsp;/&nbsp;404)</td>
+	</tr>
+
+<tr>
+	<td class="file medium" data-value="node-npmtest-nodebb/node_modules/nodebb/install/"><a href="node-npmtest-nodebb/node_modules/nodebb/install/index.html">node-npmtest-nodebb/node_modules/nodebb/install/</a></td>
+	<td data-value="50.91" class="pic medium"><span class="cover-fill" style="width: 50px;"></span><span class="cover-empty" style="width:50px;"></span></td>
+	<td data-value="50.91" class="pct medium">50.91%</td>
+	<td data-value="110" class="abs medium">(56&nbsp;/&nbsp;110)</td>
+	<td data-value="10.53" class="pct low">10.53%</td>
+	<td data-value="38" class="abs low">(4&nbsp;/&nbsp;38)</td>
+	<td data-value="52.38" class="pct medium">52.38%</td>
+	<td data-value="21" class="abs medium">(11&nbsp;/&nbsp;21)</td>
+	<td data-value="50.91" class="pct medium">50.91%</td>
+	<td data-value="110" class="abs medium">(56&nbsp;/&nbsp;110)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/public/src/"><a href="node-npmtest-nodebb/node_modules/nodebb/public/src/index.html">node-npmtest-nodebb/node_modules/nodebb/public/src/</a></td>
+	<td data-value="6.59" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.59" class="pct low">6.59%</td>
+	<td data-value="622" class="abs low">(41&nbsp;/&nbsp;622)</td>
+	<td data-value="3.85" class="pct low">3.85%</td>
+	<td data-value="416" class="abs low">(16&nbsp;/&nbsp;416)</td>
+	<td data-value="3.79" class="pct low">3.79%</td>
+	<td data-value="132" class="abs low">(5&nbsp;/&nbsp;132)</td>
+	<td data-value="6.59" class="pct low">6.59%</td>
+	<td data-value="622" class="abs low">(41&nbsp;/&nbsp;622)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/public/src/admin/"><a href="node-npmtest-nodebb/node_modules/nodebb/public/src/admin/index.html">node-npmtest-nodebb/node_modules/nodebb/public/src/admin/</a></td>
+	<td data-value="3.49" class="pic low"><span class="cover-fill" style="width: 3px;"></span><span class="cover-empty" style="width:97px;"></span></td>
+	<td data-value="3.49" class="pct low">3.49%</td>
+	<td data-value="86" class="abs low">(3&nbsp;/&nbsp;86)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="46" class="abs low">(0&nbsp;/&nbsp;46)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="20" class="abs low">(0&nbsp;/&nbsp;20)</td>
+	<td data-value="3.49" class="pct low">3.49%</td>
+	<td data-value="86" class="abs low">(3&nbsp;/&nbsp;86)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/public/src/client/"><a href="node-npmtest-nodebb/node_modules/nodebb/public/src/client/index.html">node-npmtest-nodebb/node_modules/nodebb/public/src/client/</a></td>
+	<td data-value="6.5" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.5" class="pct low">6.5%</td>
+	<td data-value="1461" class="abs low">(95&nbsp;/&nbsp;1461)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="710" class="abs low">(0&nbsp;/&nbsp;710)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="317" class="abs low">(0&nbsp;/&nbsp;317)</td>
+	<td data-value="6.5" class="pct low">6.5%</td>
+	<td data-value="1461" class="abs low">(95&nbsp;/&nbsp;1461)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/public/src/modules/"><a href="node-npmtest-nodebb/node_modules/nodebb/public/src/modules/index.html">node-npmtest-nodebb/node_modules/nodebb/public/src/modules/</a></td>
+	<td data-value="5.77" class="pic low"><span class="cover-fill" style="width: 5px;"></span><span class="cover-empty" style="width:95px;"></span></td>
+	<td data-value="5.77" class="pct low">5.77%</td>
+	<td data-value="1681" class="abs low">(97&nbsp;/&nbsp;1681)</td>
+	<td data-value="1.55" class="pct low">1.55%</td>
+	<td data-value="903" class="abs low">(14&nbsp;/&nbsp;903)</td>
+	<td data-value="1.45" class="pct low">1.45%</td>
+	<td data-value="414" class="abs low">(6&nbsp;/&nbsp;414)</td>
+	<td data-value="4.6" class="pct low">4.6%</td>
+	<td data-value="1478" class="abs low">(68&nbsp;/&nbsp;1478)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/index.html">node-npmtest-nodebb/node_modules/nodebb/src/</a></td>
+	<td data-value="5.9" class="pic low"><span class="cover-fill" style="width: 5px;"></span><span class="cover-empty" style="width:95px;"></span></td>
+	<td data-value="5.9" class="pct low">5.9%</td>
+	<td data-value="3879" class="abs low">(229&nbsp;/&nbsp;3879)</td>
+	<td data-value="0.62" class="pct low">0.62%</td>
+	<td data-value="1932" class="abs low">(12&nbsp;/&nbsp;1932)</td>
+	<td data-value="0.37" class="pct low">0.37%</td>
+	<td data-value="1076" class="abs low">(4&nbsp;/&nbsp;1076)</td>
+	<td data-value="5.91" class="pct low">5.91%</td>
+	<td data-value="3876" class="abs low">(229&nbsp;/&nbsp;3876)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/categories/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/categories/index.html">node-npmtest-nodebb/node_modules/nodebb/src/categories/</a></td>
+	<td data-value="7.3" class="pic low"><span class="cover-fill" style="width: 7px;"></span><span class="cover-empty" style="width:93px;"></span></td>
+	<td data-value="7.3" class="pct low">7.3%</td>
+	<td data-value="466" class="abs low">(34&nbsp;/&nbsp;466)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="209" class="abs low">(0&nbsp;/&nbsp;209)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="192" class="abs low">(0&nbsp;/&nbsp;192)</td>
+	<td data-value="7.3" class="pct low">7.3%</td>
+	<td data-value="466" class="abs low">(34&nbsp;/&nbsp;466)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/controllers/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/controllers/index.html">node-npmtest-nodebb/node_modules/nodebb/src/controllers/</a></td>
+	<td data-value="5.26" class="pic low"><span class="cover-fill" style="width: 5px;"></span><span class="cover-empty" style="width:95px;"></span></td>
+	<td data-value="5.26" class="pct low">5.26%</td>
+	<td data-value="1596" class="abs low">(84&nbsp;/&nbsp;1596)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1015" class="abs low">(0&nbsp;/&nbsp;1015)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="307" class="abs low">(0&nbsp;/&nbsp;307)</td>
+	<td data-value="5.26" class="pct low">5.26%</td>
+	<td data-value="1596" class="abs low">(84&nbsp;/&nbsp;1596)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/controllers/accounts/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/controllers/accounts/index.html">node-npmtest-nodebb/node_modules/nodebb/src/controllers/accounts/</a></td>
+	<td data-value="6.33" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.33" class="pct low">6.33%</td>
+	<td data-value="458" class="abs low">(29&nbsp;/&nbsp;458)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="175" class="abs low">(0&nbsp;/&nbsp;175)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="108" class="abs low">(0&nbsp;/&nbsp;108)</td>
+	<td data-value="6.33" class="pct low">6.33%</td>
+	<td data-value="458" class="abs low">(29&nbsp;/&nbsp;458)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/controllers/admin/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/controllers/admin/index.html">node-npmtest-nodebb/node_modules/nodebb/src/controllers/admin/</a></td>
+	<td data-value="14.12" class="pic low"><span class="cover-fill" style="width: 14px;"></span><span class="cover-empty" style="width:86px;"></span></td>
+	<td data-value="14.12" class="pct low">14.12%</td>
+	<td data-value="588" class="abs low">(83&nbsp;/&nbsp;588)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="189" class="abs low">(0&nbsp;/&nbsp;189)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="169" class="abs low">(0&nbsp;/&nbsp;169)</td>
+	<td data-value="14.12" class="pct low">14.12%</td>
+	<td data-value="588" class="abs low">(83&nbsp;/&nbsp;588)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/database/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/database/index.html">node-npmtest-nodebb/node_modules/nodebb/src/database/</a></td>
+	<td data-value="15.51" class="pic low"><span class="cover-fill" style="width: 15px;"></span><span class="cover-empty" style="width:85px;"></span></td>
+	<td data-value="15.51" class="pct low">15.51%</td>
+	<td data-value="187" class="abs low">(29&nbsp;/&nbsp;187)</td>
+	<td data-value="22" class="pct low">22%</td>
+	<td data-value="100" class="abs low">(22&nbsp;/&nbsp;100)</td>
+	<td data-value="6.25" class="pct low">6.25%</td>
+	<td data-value="32" class="abs low">(2&nbsp;/&nbsp;32)</td>
+	<td data-value="15.68" class="pct low">15.68%</td>
+	<td data-value="185" class="abs low">(29&nbsp;/&nbsp;185)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/database/mongo/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/database/mongo/index.html">node-npmtest-nodebb/node_modules/nodebb/src/database/mongo/</a></td>
+	<td data-value="2.72" class="pic low"><span class="cover-fill" style="width: 2px;"></span><span class="cover-empty" style="width:98px;"></span></td>
+	<td data-value="2.72" class="pct low">2.72%</td>
+	<td data-value="809" class="abs low">(22&nbsp;/&nbsp;809)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="523" class="abs low">(0&nbsp;/&nbsp;523)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="202" class="abs low">(0&nbsp;/&nbsp;202)</td>
+	<td data-value="2.72" class="pct low">2.72%</td>
+	<td data-value="809" class="abs low">(22&nbsp;/&nbsp;809)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/database/redis/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/database/redis/index.html">node-npmtest-nodebb/node_modules/nodebb/src/database/redis/</a></td>
+	<td data-value="25" class="pic low"><span class="cover-fill" style="width: 25px;"></span><span class="cover-empty" style="width:75px;"></span></td>
+	<td data-value="25" class="pct low">25%</td>
+	<td data-value="24" class="abs low">(6&nbsp;/&nbsp;24)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="6" class="abs low">(0&nbsp;/&nbsp;6)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="7" class="abs low">(0&nbsp;/&nbsp;7)</td>
+	<td data-value="25" class="pct low">25%</td>
+	<td data-value="24" class="abs low">(6&nbsp;/&nbsp;24)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/groups/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/groups/index.html">node-npmtest-nodebb/node_modules/nodebb/src/groups/</a></td>
+	<td data-value="6.3" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.3" class="pct low">6.3%</td>
+	<td data-value="587" class="abs low">(37&nbsp;/&nbsp;587)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="320" class="abs low">(0&nbsp;/&nbsp;320)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="201" class="abs low">(0&nbsp;/&nbsp;201)</td>
+	<td data-value="6.34" class="pct low">6.34%</td>
+	<td data-value="584" class="abs low">(37&nbsp;/&nbsp;584)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/messaging/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/messaging/index.html">node-npmtest-nodebb/node_modules/nodebb/src/messaging/</a></td>
+	<td data-value="6.36" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.36" class="pct low">6.36%</td>
+	<td data-value="283" class="abs low">(18&nbsp;/&nbsp;283)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="101" class="abs low">(0&nbsp;/&nbsp;101)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="114" class="abs low">(0&nbsp;/&nbsp;114)</td>
+	<td data-value="6.36" class="pct low">6.36%</td>
+	<td data-value="283" class="abs low">(18&nbsp;/&nbsp;283)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/meta/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/meta/index.html">node-npmtest-nodebb/node_modules/nodebb/src/meta/</a></td>
+	<td data-value="11.24" class="pic low"><span class="cover-fill" style="width: 11px;"></span><span class="cover-empty" style="width:89px;"></span></td>
+	<td data-value="11.24" class="pct low">11.24%</td>
+	<td data-value="703" class="abs low">(79&nbsp;/&nbsp;703)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="300" class="abs low">(0&nbsp;/&nbsp;300)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="182" class="abs low">(0&nbsp;/&nbsp;182)</td>
+	<td data-value="11.24" class="pct low">11.24%</td>
+	<td data-value="703" class="abs low">(79&nbsp;/&nbsp;703)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/middleware/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/middleware/index.html">node-npmtest-nodebb/node_modules/nodebb/src/middleware/</a></td>
+	<td data-value="7.76" class="pic low"><span class="cover-fill" style="width: 7px;"></span><span class="cover-empty" style="width:93px;"></span></td>
+	<td data-value="7.76" class="pct low">7.76%</td>
+	<td data-value="451" class="abs low">(35&nbsp;/&nbsp;451)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="266" class="abs low">(0&nbsp;/&nbsp;266)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="101" class="abs low">(0&nbsp;/&nbsp;101)</td>
+	<td data-value="7.76" class="pct low">7.76%</td>
+	<td data-value="451" class="abs low">(35&nbsp;/&nbsp;451)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/navigation/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/navigation/index.html">node-npmtest-nodebb/node_modules/nodebb/src/navigation/</a></td>
+	<td data-value="8.47" class="pic low"><span class="cover-fill" style="width: 8px;"></span><span class="cover-empty" style="width:92px;"></span></td>
+	<td data-value="8.47" class="pct low">8.47%</td>
+	<td data-value="59" class="abs low">(5&nbsp;/&nbsp;59)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="16" class="abs low">(0&nbsp;/&nbsp;16)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="15" class="abs low">(0&nbsp;/&nbsp;15)</td>
+	<td data-value="8.47" class="pct low">8.47%</td>
+	<td data-value="59" class="abs low">(5&nbsp;/&nbsp;59)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/plugins/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/plugins/index.html">node-npmtest-nodebb/node_modules/nodebb/src/plugins/</a></td>
+	<td data-value="5.96" class="pic low"><span class="cover-fill" style="width: 5px;"></span><span class="cover-empty" style="width:95px;"></span></td>
+	<td data-value="5.96" class="pct low">5.96%</td>
+	<td data-value="285" class="abs low">(17&nbsp;/&nbsp;285)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="151" class="abs low">(0&nbsp;/&nbsp;151)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="65" class="abs low">(0&nbsp;/&nbsp;65)</td>
+	<td data-value="5.96" class="pct low">5.96%</td>
+	<td data-value="285" class="abs low">(17&nbsp;/&nbsp;285)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/posts/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/posts/index.html">node-npmtest-nodebb/node_modules/nodebb/src/posts/</a></td>
+	<td data-value="6.55" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.55" class="pct low">6.55%</td>
+	<td data-value="947" class="abs low">(62&nbsp;/&nbsp;947)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="448" class="abs low">(0&nbsp;/&nbsp;448)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="333" class="abs low">(0&nbsp;/&nbsp;333)</td>
+	<td data-value="6.57" class="pct low">6.57%</td>
+	<td data-value="943" class="abs low">(62&nbsp;/&nbsp;943)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/privileges/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/privileges/index.html">node-npmtest-nodebb/node_modules/nodebb/src/privileges/</a></td>
+	<td data-value="4.32" class="pic low"><span class="cover-fill" style="width: 4px;"></span><span class="cover-empty" style="width:96px;"></span></td>
+	<td data-value="4.32" class="pct low">4.32%</td>
+	<td data-value="532" class="abs low">(23&nbsp;/&nbsp;532)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="300" class="abs low">(0&nbsp;/&nbsp;300)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="210" class="abs low">(0&nbsp;/&nbsp;210)</td>
+	<td data-value="4.34" class="pct low">4.34%</td>
+	<td data-value="530" class="abs low">(23&nbsp;/&nbsp;530)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/rewards/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/rewards/index.html">node-npmtest-nodebb/node_modules/nodebb/src/rewards/</a></td>
+	<td data-value="12" class="pic low"><span class="cover-fill" style="width: 12px;"></span><span class="cover-empty" style="width:88px;"></span></td>
+	<td data-value="12" class="pct low">12%</td>
+	<td data-value="125" class="abs low">(15&nbsp;/&nbsp;125)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="42" class="abs low">(0&nbsp;/&nbsp;42)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="55" class="abs low">(0&nbsp;/&nbsp;55)</td>
+	<td data-value="12" class="pct low">12%</td>
+	<td data-value="125" class="abs low">(15&nbsp;/&nbsp;125)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/routes/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/routes/index.html">node-npmtest-nodebb/node_modules/nodebb/src/routes/</a></td>
+	<td data-value="11.11" class="pic low"><span class="cover-fill" style="width: 11px;"></span><span class="cover-empty" style="width:89px;"></span></td>
+	<td data-value="11.11" class="pct low">11.11%</td>
+	<td data-value="531" class="abs low">(59&nbsp;/&nbsp;531)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="152" class="abs low">(0&nbsp;/&nbsp;152)</td>
+	<td data-value="1.14" class="pct low">1.14%</td>
+	<td data-value="88" class="abs low">(1&nbsp;/&nbsp;88)</td>
+	<td data-value="11.11" class="pct low">11.11%</td>
+	<td data-value="531" class="abs low">(59&nbsp;/&nbsp;531)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/index.html">node-npmtest-nodebb/node_modules/nodebb/src/socket.io/</a></td>
+	<td data-value="4.68" class="pic low"><span class="cover-fill" style="width: 4px;"></span><span class="cover-empty" style="width:96px;"></span></td>
+	<td data-value="4.68" class="pct low">4.68%</td>
+	<td data-value="940" class="abs low">(44&nbsp;/&nbsp;940)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="536" class="abs low">(0&nbsp;/&nbsp;536)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="254" class="abs low">(0&nbsp;/&nbsp;254)</td>
+	<td data-value="4.68" class="pct low">4.68%</td>
+	<td data-value="940" class="abs low">(44&nbsp;/&nbsp;940)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/admin/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/admin/index.html">node-npmtest-nodebb/node_modules/nodebb/src/socket.io/admin/</a></td>
+	<td data-value="5" class="pic low"><span class="cover-fill" style="width: 5px;"></span><span class="cover-empty" style="width:95px;"></span></td>
+	<td data-value="5" class="pct low">5%</td>
+	<td data-value="320" class="abs low">(16&nbsp;/&nbsp;320)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="134" class="abs low">(0&nbsp;/&nbsp;134)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="89" class="abs low">(0&nbsp;/&nbsp;89)</td>
+	<td data-value="5" class="pct low">5%</td>
+	<td data-value="320" class="abs low">(16&nbsp;/&nbsp;320)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/posts/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/posts/index.html">node-npmtest-nodebb/node_modules/nodebb/src/socket.io/posts/</a></td>
+	<td data-value="6.77" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.77" class="pct low">6.77%</td>
+	<td data-value="310" class="abs low">(21&nbsp;/&nbsp;310)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="164" class="abs low">(0&nbsp;/&nbsp;164)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="101" class="abs low">(0&nbsp;/&nbsp;101)</td>
+	<td data-value="6.77" class="pct low">6.77%</td>
+	<td data-value="310" class="abs low">(21&nbsp;/&nbsp;310)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/topics/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/topics/index.html">node-npmtest-nodebb/node_modules/nodebb/src/socket.io/topics/</a></td>
+	<td data-value="4.68" class="pic low"><span class="cover-fill" style="width: 4px;"></span><span class="cover-empty" style="width:96px;"></span></td>
+	<td data-value="4.68" class="pct low">4.68%</td>
+	<td data-value="235" class="abs low">(11&nbsp;/&nbsp;235)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="115" class="abs low">(0&nbsp;/&nbsp;115)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="75" class="abs low">(0&nbsp;/&nbsp;75)</td>
+	<td data-value="4.68" class="pct low">4.68%</td>
+	<td data-value="235" class="abs low">(11&nbsp;/&nbsp;235)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/user/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/socket.io/user/index.html">node-npmtest-nodebb/node_modules/nodebb/src/socket.io/user/</a></td>
+	<td data-value="7.28" class="pic low"><span class="cover-fill" style="width: 7px;"></span><span class="cover-empty" style="width:93px;"></span></td>
+	<td data-value="7.28" class="pct low">7.28%</td>
+	<td data-value="206" class="abs low">(15&nbsp;/&nbsp;206)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="124" class="abs low">(0&nbsp;/&nbsp;124)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="65" class="abs low">(0&nbsp;/&nbsp;65)</td>
+	<td data-value="7.28" class="pct low">7.28%</td>
+	<td data-value="206" class="abs low">(15&nbsp;/&nbsp;206)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/topics/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/topics/index.html">node-npmtest-nodebb/node_modules/nodebb/src/topics/</a></td>
+	<td data-value="5.55" class="pic low"><span class="cover-fill" style="width: 5px;"></span><span class="cover-empty" style="width:95px;"></span></td>
+	<td data-value="5.55" class="pct low">5.55%</td>
+	<td data-value="1459" class="abs low">(81&nbsp;/&nbsp;1459)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="669" class="abs low">(0&nbsp;/&nbsp;669)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="579" class="abs low">(0&nbsp;/&nbsp;579)</td>
+	<td data-value="5.57" class="pct low">5.57%</td>
+	<td data-value="1455" class="abs low">(81&nbsp;/&nbsp;1455)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/user/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/user/index.html">node-npmtest-nodebb/node_modules/nodebb/src/user/</a></td>
+	<td data-value="6.46" class="pic low"><span class="cover-fill" style="width: 6px;"></span><span class="cover-empty" style="width:94px;"></span></td>
+	<td data-value="6.46" class="pct low">6.46%</td>
+	<td data-value="1533" class="abs low">(99&nbsp;/&nbsp;1533)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="777" class="abs low">(0&nbsp;/&nbsp;777)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="537" class="abs low">(0&nbsp;/&nbsp;537)</td>
+	<td data-value="6.46" class="pct low">6.46%</td>
+	<td data-value="1532" class="abs low">(99&nbsp;/&nbsp;1532)</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="node-npmtest-nodebb/node_modules/nodebb/src/widgets/"><a href="node-npmtest-nodebb/node_modules/nodebb/src/widgets/index.html">node-npmtest-nodebb/node_modules/nodebb/src/widgets/</a></td>
+	<td data-value="4.88" class="pic low"><span class="cover-fill" style="width: 4px;"></span><span class="cover-empty" style="width:96px;"></span></td>
+	<td data-value="4.88" class="pct low">4.88%</td>
+	<td data-value="82" class="abs low">(4&nbsp;/&nbsp;82)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="53" class="abs low">(0&nbsp;/&nbsp;53)</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="22" class="abs low">(0&nbsp;/&nbsp;22)</td>
+	<td data-value="4.88" class="pct low">4.88%</td>
+	<td data-value="82" class="abs low">(4&nbsp;/&nbsp;82)</td>
+	</tr>
+
+</tbody>
+</table>
+</div></div>
+<div class="footer">
+    <div class="meta">Generated by <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a> at Tue Apr 25 2017 08:12:34 GMT+0000 (UTC)</div>
+</div>
+</body>
+</html>
